@@ -33,13 +33,21 @@ export default function RegisterPage() {
 
   const registerUser = async (e) => {
     e.preventDefault();
-
-    const response = await axios.post("/api/signup", data);
-
-    const userData = response.data;
-    console.log(userData);
-    if (response.status === 200) {
-      router.push("/dashboard");
+    const redirect =
+      data.role === "candidate"
+        ? "/dashboard/candidate"
+        : "/dashboard/recruiter";
+    const endpoint =
+      data.role === "candidate" ? "/api/signup/user" : "/api/signup/recruiter";
+    try {
+      const response = await axios.post(endpoint, data);
+      const userData = response.data;
+      console.log(userData);
+      if (response.status === 200) {
+        router.push(`${redirect}`);
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
     }
   };
 

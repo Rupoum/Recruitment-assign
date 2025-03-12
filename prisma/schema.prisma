@@ -18,6 +18,17 @@ model User {
     updatedAt DateTime @updatedAt
 }
 
+model Recruiter {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    email String? @unique
+
+    password  String
+    role      Role
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
 enum Role {
     candidate
     recruiter

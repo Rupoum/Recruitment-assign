@@ -14,28 +14,58 @@ export const authOptions = {
       credentials: {
         email: { label: "Email", type: "email", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
+        role: { label: "Role", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password) {
-          return null;
-        }
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-        if (!user) {
+        if (
+          !credentials ||
+          !credentials.email ||
+          !credentials.password ||
+          !credentials.role
+        ) {
           return null;
         }
 
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-        if (!isValid) {
-          return null;
+        if (credentials.role === "candidate") {
+          const user = await prisma.user.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
+          if (!user) {
+            return null;
+          }
+
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          if (!isValid) {
+            return null;
+          }
+          return user;
         }
-        return user;
+
+        if (credentials.role === "recruiter") {
+          const recruiter = await prisma.recruiter.findUnique({
+            where: {
+              email: credentials.email,
+            },
+          });
+          if (!recruiter) {
+            return null;
+          }
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            recruiter.password
+          );
+          if (!isValid) {
+            return null;
+          }
+          return recruiter;
+        }
+
+        return null;
       },
     }),
   ],

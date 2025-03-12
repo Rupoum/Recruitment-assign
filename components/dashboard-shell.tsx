@@ -2,7 +2,8 @@
 import Link from "next/link";
 import type React from "react";
 import { useEffect, useState } from "react";
-
+import { signIn, signOut } from "next-auth/react";
+import { Button } from "./ui/button";
 interface DashboardShellProps {
   children: React.ReactNode;
 }
@@ -51,12 +52,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
             >
               Settings
             </Link>
-            <Link
-              href={"/logout"}
-              className="text-sm font-medium hover:underline"
-            >
-              Logout
-            </Link>
+            <Button onClick={() => signOut()}>Log out</Button>
           </nav>
         </div>
       </header>

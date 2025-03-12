@@ -11,8 +11,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { ResumePreview } from "@/components/resume-preview";
 
 export default function CandidateDashboard() {
-  const { data: session } = useSession();
-  console.log(session);
+  const session = useSession();
+  console.log(JSON.stringify(session.data?.user));
   return (
     <DashboardShell>
       <DashboardHeader

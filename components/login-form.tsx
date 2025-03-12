@@ -35,7 +35,12 @@ export default function LoginPage() {
       ...data,
       redirect: false,
     });
-    router.push("/dashboard/candidate");
+
+    const redirect =
+      data.role === "candidate"
+        ? "/dashboard/candidate"
+        : "/dashboard/recruiter";
+    router.push(`${redirect}`);
   };
   return (
     <div className=" flex h-screen w-screen flex-col items-center justify-center">
