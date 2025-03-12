@@ -16,9 +16,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export function ResumeParser() {
   // Will be populated from the resume parsing service in a real app
+  const session = useSession();
+  console.log(session.data?.user?.email);
+
+  const userEmail = session.data?.user?.email;
   const [parsedData, setParsedData] = useState({
     personalInfo: {
       name: "Alex Johnson",
@@ -71,6 +77,14 @@ export function ResumeParser() {
     ],
   });
 
+  const fetchData = async () => {
+    console.log("backendhit");
+    const data = await axios.get("/api/aidata");
+    // Handle the fetched data as needed
+
+    console.log(data);
+  };
+
   const [newSkill, setNewSkill] = useState("");
 
   const addSkill = () => {
@@ -104,6 +118,13 @@ export function ResumeParser() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <button
+            className="text-sm mb-3 w-fit h-auto bg-green-300 px-2 py-2 text-center rounded-3xl shadow-2xs shadow-green-300 hover:shadow-green-800 cursor-pointer "
+            onClick={fetchData}
+          >
+            Fetch data from resume
+          </button>
+
           <Tabs defaultValue="personal" className="space-y-4">
             <TabsList>
               <TabsTrigger value="personal">Personal Info</TabsTrigger>

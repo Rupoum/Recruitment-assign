@@ -75,6 +75,8 @@ export function ResumePreview() {
     ],
   };
 
+  const download = async () => {};
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -96,7 +98,7 @@ export function ResumePreview() {
                 {resumeData.personalInfo.title}
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => download}>
               <FileText className="mr-2 h-4 w-4" />
               Download PDF
             </Button>

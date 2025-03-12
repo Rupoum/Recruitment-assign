@@ -1,10 +1,17 @@
-// import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 
-export async function GET(req: NextResponse, res: NextResponse) {
+export async function GET(req: NextApiRequest, res: NextApiRequest) {
+  const session = await getServerSession();
+  console.log(session.user?.email);
+  if (!process.env.GEMINI_API) {
+    return new NextResponse("Error", { status: 500 });
+  }
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   console.log(process.env.GEMINI_API); //   const prompt = "Explain how AI works";
@@ -28,7 +35,7 @@ export async function GET(req: NextResponse, res: NextResponse) {
           mimeType: "application/pdf",
         },
       },
-      "Extract the following information from the resume: Name, Email, and Skills. Format the response as JSON with keys 'name', 'email', and 'skills'.",
+      "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys.",
     ]);
 
     console.log(result);

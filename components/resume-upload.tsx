@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText, Upload } from "lucide-react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +23,10 @@ export default function UploadResume() {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  const session = useSession();
+  console.log(session.data?.user?.email);
 
+  const user = session.data?.user;
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
@@ -63,6 +67,7 @@ export default function UploadResume() {
           const response = await axios.post("/api/fileupload", {
             base64File,
             filename: file.name,
+            user: user,
           });
 
           if (response.status === 200) {
