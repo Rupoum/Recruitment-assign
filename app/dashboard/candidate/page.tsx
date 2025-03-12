@@ -1,6 +1,7 @@
+"use client";
 import Link from "next/link";
 import { Upload } from "lucide-react";
-
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { JobMatches } from "@/components/job-matches";
@@ -10,6 +11,8 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { ResumePreview } from "@/components/resume-preview";
 
 export default function CandidateDashboard() {
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <DashboardShell>
       <DashboardHeader
@@ -22,6 +25,8 @@ export default function CandidateDashboard() {
             Upload Resume
           </Link>
         </Button>
+
+        <div></div>
       </DashboardHeader>
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>

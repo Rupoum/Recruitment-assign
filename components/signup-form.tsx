@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FileText } from "lucide-react";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +23,25 @@ export default function RegisterPage() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") || "candidate";
   const [role, setRole] = useState(defaultRole);
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    role: defaultRole,
+  });
+
+  const router = useRouter();
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+
+    const response = await axios.post("/api/signup", data);
+
+    const userData = response.data;
+    console.log(userData);
+    if (response.status === 200) {
+      router.push("/dashboard");
+    }
+  };
 
   return (
     <div className=" flex h-screen w-screen flex-col items-center justify-center">
@@ -42,18 +62,37 @@ export default function RegisterPage() {
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              value={data.email}
+              onChange={(e) => {
+                setData((prev) => ({ ...prev, email: e.target.value }));
+              }}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
+            <Input
+              id="password"
+              type="password"
+              value={data.password}
+              onChange={(e) => {
+                setData((prev) => ({ ...prev, password: e.target.value }));
+              }}
+            />
           </div>
 
           <div className="grid gap-2">
             <Label>Account Type</Label>
             <RadioGroup
               defaultValue={role}
-              onValueChange={setRole}
+              value={role}
+              onValueChange={(value) => {
+                setRole(value);
+                setData((prev) => ({ ...prev, role: value }));
+              }}
               className="grid grid-cols-2 gap-4"
             >
               <div>
@@ -90,7 +129,10 @@ export default function RegisterPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full text-black shadow-black shadow-sm">
+          <Button
+            className="w-full text-black shadow-black shadow-sm"
+            onClick={registerUser}
+          >
             Create account
           </Button>
         </CardFooter>

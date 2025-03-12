@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FileText } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +23,20 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") || "candidate";
   const [role, setRole] = useState(defaultRole);
-
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    role: defaultRole,
+  });
+  const router = useRouter();
+  const loginUser = async (e) => {
+    e.preventDefault();
+    signIn("credentials", {
+      ...data,
+      redirect: false,
+    });
+    router.push("/dashboard/candidate");
+  };
   return (
     <div className=" flex h-screen w-screen flex-col items-center justify-center">
       <Link
@@ -42,18 +56,37 @@ export default function LoginPage() {
         <CardContent className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="m@example.com" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              value={data.email}
+              onChange={(e) => {
+                setData((prev) => ({ ...prev, email: e.target.value }));
+              }}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" />
+            <Input
+              id="password"
+              type="password"
+              value={data.password}
+              onChange={(e) => {
+                setData((prev) => ({ ...prev, password: e.target.value }));
+              }}
+            />
           </div>
 
           <div className="grid gap-2">
             <Label>Account Type</Label>
             <RadioGroup
               defaultValue={role}
-              onValueChange={setRole}
+              value={role}
+              onValueChange={(value) => {
+                setRole(value);
+                setData((prev) => ({ ...prev, role: value }));
+              }}
               className="grid grid-cols-2 gap-4"
             >
               <div>
@@ -90,7 +123,9 @@ export default function LoginPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full shadow-black shadow-sm">Login</Button>
+          <Button className="w-full shadow-black shadow-sm" onClick={loginUser}>
+            Login
+          </Button>
         </CardFooter>
       </Card>
       <p className="mt-4 text-center text-sm text-muted-foreground">
