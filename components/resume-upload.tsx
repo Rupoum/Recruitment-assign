@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, FileText, Upload } from "lucide-react";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -48,7 +49,30 @@ export default function UploadResume() {
 
   const handleFile = async (file: File) => {
     setFile(file);
-    setIsUploaded(true);
+    console.log(file);
+  };
+
+  const handleUpload = async () => {
+    console.log("clicked");
+    if (file) {
+      try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = async () => {
+          const base64File = reader.result?.toString().split(",")[1];
+          const response = await axios.post("/api/fileupload", {
+            base64File,
+            filename: file.name,
+          });
+
+          if (response.status === 200) {
+            setIsUploaded(true);
+          }
+        };
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    }
   };
 
   return (
@@ -136,9 +160,7 @@ export default function UploadResume() {
                         Upload a different file
                       </Button>
                     ) : (
-                      <div className="w-full max-w-xs bg-muted rounded-full h-2.5 mt-2">
-                        <div className="bg-primary h-2.5 rounded-full w-2/3 animate-pulse"></div>
-                      </div>
+                      <Button onClick={handleUpload}>Upload</Button>
                     )}
                   </>
                 )}
