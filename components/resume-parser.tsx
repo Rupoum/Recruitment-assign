@@ -27,62 +27,37 @@ export function ResumeParser() {
   const userEmail = session.data?.user?.email;
   const [parsedData, setParsedData] = useState({
     personalInfo: {
-      name: "Alex Johnson",
-      title: "Senior Frontend Developer",
-      email: "alex.johnson@example.com",
-      phone: "(555) 123-4567",
-      location: "San Francisco, CA",
-      summary:
-        "Experienced frontend developer with 8+ years of experience building responsive and accessible web applications. Specialized in React, TypeScript, and modern frontend frameworks.",
+      name: "",
+      title: "",
+      email: "",
+      phone: "",
+      location: "",
+      summary: "",
     },
-    skills: [
-      "React",
-      "TypeScript",
-      "JavaScript",
-      "HTML5",
-      "CSS3",
-      "Next.js",
-      "Redux",
-      "Tailwind CSS",
-      "GraphQL",
-      "Jest",
-    ],
-    experience: [
-      {
-        title: "Senior Frontend Developer",
-        company: "TechCorp",
-        location: "San Francisco, CA",
-        startDate: "2020-03",
-        endDate: "Present",
-        description:
-          "Lead frontend development for the company's main product. Implemented new features, improved performance, and mentored junior developers.",
-      },
-      {
-        title: "Frontend Engineer",
-        company: "WebSolutions Inc.",
-        location: "New York, NY",
-        startDate: "2017-06",
-        endDate: "2020-02",
-        description:
-          "Developed and maintained multiple client websites. Worked closely with designers to implement pixel-perfect UIs.",
-      },
-    ],
-    education: [
-      {
-        degree: "Bachelor of Science in Computer Science",
-        institution: "University of California, Berkeley",
-        location: "Berkeley, CA",
-        graduationDate: "2014-05",
-      },
-    ],
+    skills: [],
+    experience: [],
+    education: [],
   });
 
   const fetchData = async () => {
-    console.log("backendhit");
     const data = await axios.get("/api/aidata");
-    // Handle the fetched data as needed
 
-    console.log(data);
+    const dataRec = data.data;
+    console.log(dataRec);
+
+    setParsedData({
+      personalInfo: {
+        name: dataRec.Name,
+        title: dataRec.Title,
+        email: dataRec.Email,
+        phone: dataRec.Phone,
+        location: dataRec.Location,
+        summary: dataRec.Summary,
+      },
+      skills: dataRec.Skills,
+      experience: dataRec.Experience,
+      education: dataRec.Education,
+    });
   };
 
   const [newSkill, setNewSkill] = useState("");
@@ -140,7 +115,7 @@ export function ResumeParser() {
                     <Label htmlFor="name">Full Name</Label>
                     <Input
                       id="name"
-                      value={parsedData.personalInfo.name}
+                      value={parsedData.personalInfo.name || ""}
                       onChange={(e) =>
                         setParsedData({
                           ...parsedData,
@@ -156,7 +131,7 @@ export function ResumeParser() {
                     <Label htmlFor="title">Professional Title</Label>
                     <Input
                       id="title"
-                      value={parsedData.personalInfo.title}
+                      value={parsedData.personalInfo.title || ""}
                       onChange={(e) =>
                         setParsedData({
                           ...parsedData,
@@ -175,7 +150,7 @@ export function ResumeParser() {
                     <Input
                       id="email"
                       type="email"
-                      value={parsedData.personalInfo.email}
+                      value={parsedData.personalInfo.email || ""}
                       onChange={(e) =>
                         setParsedData({
                           ...parsedData,
@@ -191,7 +166,7 @@ export function ResumeParser() {
                     <Label htmlFor="phone">Phone</Label>
                     <Input
                       id="phone"
-                      value={parsedData.personalInfo.phone}
+                      value={parsedData.personalInfo.phone || ""}
                       onChange={(e) =>
                         setParsedData({
                           ...parsedData,
@@ -208,7 +183,7 @@ export function ResumeParser() {
                   <Label htmlFor="location">Location</Label>
                   <Input
                     id="location"
-                    value={parsedData.personalInfo.location}
+                    value={parsedData.personalInfo.location || ""}
                     onChange={(e) =>
                       setParsedData({
                         ...parsedData,
@@ -225,7 +200,7 @@ export function ResumeParser() {
                   <Textarea
                     id="summary"
                     rows={4}
-                    value={parsedData.personalInfo.summary}
+                    value={parsedData.personalInfo.summary || ""}
                     onChange={(e) =>
                       setParsedData({
                         ...parsedData,
@@ -262,7 +237,7 @@ export function ResumeParser() {
               <div className="flex gap-2">
                 <Input
                   placeholder="Add a skill..."
-                  value={newSkill}
+                  value={newSkill || ""}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -278,24 +253,21 @@ export function ResumeParser() {
               </div>
             </TabsContent>
 
+            {/*  Experience  */}
+
             <TabsContent value="experience" className="space-y-4">
               {parsedData.experience.map((exp, index) => (
                 <Card key={index} className="mb-4">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">{exp.title}</CardTitle>
-                    <CardDescription>
-                      {exp.company} • {exp.location}
-                    </CardDescription>
                   </CardHeader>
                   <CardContent className="pb-2">
                     <div className="grid gap-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                          <Label htmlFor={`exp-start-${index}`}>
-                            Start Date
-                          </Label>
+                          <Label htmlFor={`exp-end-${index}`}>Start Date</Label>
                           <Input
-                            id={`exp-start-${index}`}
+                            id={`exp-end-${index}`}
                             type="month"
                             value={exp.startDate}
                             onChange={(e) => {
@@ -358,7 +330,7 @@ export function ResumeParser() {
                 Add Experience
               </Button>
             </TabsContent>
-
+            {/* Education */}
             <TabsContent value="education" className="space-y-4">
               {parsedData.education.map((edu, index) => (
                 <Card key={index} className="mb-4">

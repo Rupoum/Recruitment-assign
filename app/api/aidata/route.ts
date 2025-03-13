@@ -1,50 +1,3 @@
-// import { NextApiRequest, NextApiResponse } from "next";
-
-// import { GoogleGenerativeAI } from "@google/generative-ai";
-// import fs from "fs";
-// import path from "path";
-// import { NextResponse } from "next/server";
-// import { getServerSession } from "next-auth";
-
-// export async function GET(req: NextApiRequest, res: NextApiRequest) {
-//   const session = await getServerSession();
-//   console.log(session.user?.email);
-//   if (!process.env.GEMINI_API) {
-//     return new NextResponse("Error", { status: 500 });
-//   }
-//   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
-//   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-//   console.log(process.env.GEMINI_API); //   const prompt = "Explain how AI works";
-
-//   try {
-//     const filePath = path.resolve("./test.pdf");
-//     console.log(filePath);
-//     if (!fs.existsSync(filePath)) {
-//       throw new Error("File does not exist.");
-//     }
-
-//     const fileContent = fs.readFileSync(filePath);
-//     if (!fileContent) {
-//       throw new Error("File is empty.");
-//     }
-
-//     const result = await model.generateContent([
-//       {
-//         inlineData: {
-//           data: Buffer.from(fileContent).toString("base64"),
-//           mimeType: "application/pdf",
-//         },
-//       },
-//       "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys.",
-//     ]);
-
-//     console.log(result);
-//     return new NextResponse(result.response.text(), { status: 200 });
-//   } catch (error) {
-//     console.error(error);
-//     return new NextResponse("Error", { status: 500 });
-//   }
-// }
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextApiRequest } from "next";
@@ -58,10 +11,10 @@ const prisma = new PrismaClient();
 export async function GET(req: NextApiRequest, res: NextApiRequest) {
   const session = await getServerSession();
   if (!session) {
-    return new NextResponse("unauthorised", { status: 500 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
   if (!process.env.GEMINI_API) {
-    return new NextResponse("Error with api key ", { status: 500 });
+    return new NextResponse("Error with API key", { status: 500 });
   }
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API);
@@ -84,6 +37,7 @@ export async function GET(req: NextApiRequest, res: NextApiRequest) {
       return new NextResponse("No file found", { status: 404 });
     }
 
+    // Fetch the PDF file from the URL
     const pdfBuffer = await fetch(user.fileUrl).then((response) => {
       return response.arrayBuffer();
     });
@@ -92,12 +46,13 @@ export async function GET(req: NextApiRequest, res: NextApiRequest) {
     fs.writeFileSync(pdfPath, binaryPdf, "binary");
     console.log("File saved");
 
+    // Upload the PDF file to Google AI
     const uploadResult = await fileManager.uploadFile(pdfPath, {
       mimeType: "application/pdf",
       displayName: "Candidate Resume",
     });
 
-    console.log(uploadResult.file.uri);
+    console.log("File uploaded:", uploadResult.file.uri);
 
     const result = await model.generateContent([
       {
@@ -106,14 +61,27 @@ export async function GET(req: NextApiRequest, res: NextApiRequest) {
           mimeType: uploadResult.file.mimeType,
         },
       },
-      "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys.",
+      "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys. Ensure the JSON response starts directly with the opening curly brace `{` and ends with the closing curly brace `}`. Do not include any additional text like json or explanations or ```. Always follow this exact format for the JSON keys: Name, Title, Email, Phone, Location, Summary, Skills, Experience, Education.",
     ]);
-    console.log(result.response.text());
+
+    const text = await result.response.text();
+    console.log("Initial response:", text);
+
+    const jsonStartIndex = text.indexOf("{");
+    const jsonEndIndex = text.lastIndexOf("}");
+    if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+      throw new Error("Invalid JSON response");
+    }
+
+    const jsonData = text.substring(jsonStartIndex, jsonEndIndex + 1);
+    console.log("Final JSON:", jsonData);
+
     fs.unlinkSync(pdfPath);
     console.log("File deleted");
 
-    return new NextResponse(result.response.text(), { status: 200 });
+    return new NextResponse(jsonData, { status: 200 });
   } catch (error) {
-    return new NextResponse(error, { status: 500 });
+    console.error("Error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
