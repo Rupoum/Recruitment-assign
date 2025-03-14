@@ -1,6 +1,6 @@
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { NextApiRequest } from "next";
+
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import fs from "fs";
@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextApiRequest, res: NextApiRequest) {
+export async function GET() {
   const session = await getServerSession();
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -80,6 +80,147 @@ export async function GET(req: NextApiRequest, res: NextApiRequest) {
     console.log("File deleted");
 
     return new NextResponse(jsonData, { status: 200 });
+  } catch (error) {
+    console.error("Error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const session = await getServerSession();
+  if (!session) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+  const userEmail = session.user?.email;
+
+  const { email, data } = body;
+  if (!email || !data) {
+    return new NextResponse("Provide all fields", { status: 400 });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: userEmail || undefined,
+      },
+    });
+
+    if (!user) {
+      return new NextResponse("User not found", { status: 404 });
+    }
+
+    const userProfile = await prisma.userProfile.findUnique({
+      where: {
+        userEmail: userEmail || undefined,
+      },
+    });
+
+    if (userProfile) {
+      // Update existing profile
+      const updatedProfile = await prisma.userProfile.update({
+        where: {
+          userEmail: userEmail || undefined,
+        },
+        data: {
+          name: data.personalInfo.name,
+          title: data.personalInfo.title,
+          email: data.personalInfo.email,
+          phone: data.personalInfo.phone,
+          location: data.personalInfo.location,
+          summary: data.personalInfo.summary,
+          skills: data.skills,
+          experience: {
+            deleteMany: {},
+            create: data.experience.map(
+              (exp: {
+                title: string;
+                company: string;
+                location: string;
+                startDate: Date;
+                endDate?: string;
+                description: string;
+              }) => ({
+                title: exp.title,
+                company: exp.company,
+                location: exp.location,
+                startDate: new Date(exp.startDate),
+                endDate: exp.endDate || " ",
+                description: exp.description,
+              })
+            ),
+          },
+          education: {
+            deleteMany: {},
+            create: data.education.map(
+              (edu: {
+                degree: string;
+                institution: string;
+                location: string;
+                graduationDate: Date;
+              }) => ({
+                degree: edu.degree,
+                institution: edu.institution,
+                location: edu.location,
+                graduationDate: new Date(edu.graduationDate) || null,
+              })
+            ),
+          },
+        },
+      });
+
+      return new NextResponse(JSON.stringify(updatedProfile), { status: 200 });
+    } else {
+      // Create new profile
+      const newProfile = await prisma.userProfile.create({
+        data: {
+          name: data.personalInfo.name,
+          title: data.personalInfo.title,
+          userEmail: userEmail ? userEmail : undefined,
+          email: data.personalInfo.email,
+          phone: data.personalInfo.phone,
+          location: data.personalInfo.location,
+          summary: data.personalInfo.summary,
+          skills: data.skills,
+          experience: {
+            create: data.experience.map(
+              (exp: {
+                title: string;
+                company: string;
+                location: string;
+                startDate: Date;
+                endDate?: string;
+                description: string;
+              }) => ({
+                title: exp.title,
+                company: exp.company,
+                location: exp.location,
+                startDate: new Date(exp.startDate),
+                endDate: exp.endDate || " ",
+                description: exp.description,
+              })
+            ),
+          },
+          education: {
+            create: data.education.map(
+              (edu: {
+                degree: string;
+                institution: string;
+                location: string;
+                graduationDate: Date;
+              }) => ({
+                degree: edu.degree,
+                institution: edu.institution,
+                location: edu.location,
+                graduationDate: new Date(edu.graduationDate) || null,
+              })
+            ),
+          },
+        },
+      });
+
+      return new NextResponse(JSON.stringify(newProfile), { status: 200 });
+    }
   } catch (error) {
     console.error("Error:", error);
     return new NextResponse("Internal Server Error", { status: 500 });

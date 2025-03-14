@@ -12,11 +12,12 @@ model User {
 
     email String? @unique
 
-    password  String
-    role      Role
-    fileUrl   String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    password    String
+    role        Role
+    fileUrl     String?
+    userProfile UserProfile?
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
 }
 
 model Recruiter {
@@ -36,16 +37,17 @@ enum Role {
 }
 
 model UserProfile {
-    id String @id @default(auto()) @map("_id") @db.ObjectId
+    id        String  @id @default(auto()) @map("_id") @db.ObjectId
+    user      User    @relation(fields: [userEmail], references: [email])
+    userEmail String  @unique
+    name      String
+    title     String?
+    email     String?
+    phone     String?
+    location  String?
+    summary   String?
 
-    name     String
-    title    String?
-    email    String?
-    phone    String?
-    location String?
-    summary  String?
-
-    skills     String[] // Array of skills
+    skills     String[]     @default([])
     experience Experience[]
     education  Education[]
 
@@ -60,7 +62,7 @@ model Experience {
     company     String?
     location    String?
     startDate   DateTime
-    endDate     DateTime?
+    endDate     String
     description String?
 
     userProfileId String      @db.ObjectId

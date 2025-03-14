@@ -20,7 +20,6 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 
 export function ResumeParser() {
-  // Will be populated from the resume parsing service in a real app
   const session = useSession();
   console.log(session.data?.user?.email);
 
@@ -54,9 +53,9 @@ export function ResumeParser() {
         location: dataRec.Location,
         summary: dataRec.Summary,
       },
-      skills: dataRec.Skills,
-      experience: dataRec.Experience,
-      education: dataRec.Education,
+      skills: dataRec.Skills || [],
+      experience: dataRec.Experience || [],
+      education: Array.isArray(dataRec.Education) ? dataRec.Education : [],
     });
   };
 
@@ -80,6 +79,18 @@ export function ResumeParser() {
       ...parsedData,
       skills: parsedData.skills.filter((skill) => skill !== skillToRemove),
     });
+  };
+
+  const PostData = async () => {
+    console.log("clicked");
+    console.log("parsedData", parsedData);
+
+    const data = await axios.post("/api/aidata", {
+      email: userEmail,
+      data: parsedData,
+    });
+
+    console.log("sendData", data);
   };
 
   return (
@@ -374,7 +385,7 @@ export function ResumeParser() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Reset to Original</Button>
-          <Button>Save Profile</Button>
+          <Button onClick={PostData}>Save Profile</Button>
         </CardFooter>
       </Card>
     </div>
