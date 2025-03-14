@@ -11,6 +11,7 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { ResumePreview } from "@/components/resume-preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import AllJobs from "@/components/all-jobs";
 export default function CandidateDashboard() {
   const [userData, setUserData] = useState(null);
   const session = useSession();
@@ -47,11 +48,15 @@ export default function CandidateDashboard() {
       <Tabs defaultValue="profile" className="space-y-4">
         <TabsList>
           <TabsTrigger value="profile">Profile & Resume</TabsTrigger>
+          <TabsTrigger value="alljobs">All Jobs</TabsTrigger>
           <TabsTrigger value="matches">Job Matches</TabsTrigger>
           <TabsTrigger value="applications">Applications</TabsTrigger>
         </TabsList>
         <TabsContent value="profile" className="space-y-4">
           <ResumePreview userData={userData} />
+        </TabsContent>
+        <TabsContent value="alljobs" className="space-y-4">
+          <AllJobs />
         </TabsContent>
         <TabsContent value="matches" className="space-y-4">
           <JobMatches />

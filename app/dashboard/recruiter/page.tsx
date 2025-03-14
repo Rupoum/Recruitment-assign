@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 
@@ -10,11 +9,8 @@ import { CandidateMatches } from "@/components/candidiate-matches";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Analytics } from "@/components/recruiter-analytics";
-import { useSession } from "next-auth/react";
 
 export default function RecruiterDashboard() {
-  const { data: session } = useSession();
-  console.log(session);
   return (
     <DashboardShell>
       <DashboardHeader

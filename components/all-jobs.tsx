@@ -1,7 +1,5 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,20 +7,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
-import { useEffect, useState } from "react";
+} from "./ui/card";
+
+import { Progress } from "@radix-ui/react-progress";
+import { Button } from "./ui/button";
+import { Briefcase, Building, Eye, MapPin } from "lucide-react";
+import { Badge } from "./ui/badge";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-
-export function JobListings() {
+const AllJobs = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/jobs");
+        const response = await axios.get("/api/alljobs");
         setData(response.data);
       } catch (error) {
         console.error("Error fetching job data:", error);
@@ -32,7 +31,6 @@ export function JobListings() {
     fetchData();
   }, []);
   console.log(data);
-
   return (
     <div className="grid gap-4">
       {data.map((job) => (
@@ -68,14 +66,14 @@ export function JobListings() {
             </div>
             <div className="flex gap-2">
               <Button size="sm" variant="outline">
-                <Eye className="mr-2 h-4 w-4" />
-                View
+                Apply Now
               </Button>
-              <Button size="sm">View Matches</Button>
             </div>
           </CardFooter>
         </Card>
       ))}
     </div>
   );
-}
+};
+
+export default AllJobs;
