@@ -61,6 +61,7 @@ const JobForm = () => {
       skills,
     };
     setLoading(true);
+    console.log(company);
     console.log("JobData", jobData);
     try {
       const response = await axios.post("/api/jobs", jobData);

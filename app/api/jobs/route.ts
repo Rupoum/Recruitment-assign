@@ -12,8 +12,16 @@ export async function POST(req: Request, res: Request) {
   const email = session.user?.email;
 
   const body = await req.json();
-  const { title, type, location, salary, description, requirements, skills } =
-    body;
+  const {
+    title,
+    type,
+    location,
+    salary,
+    description,
+    requirements,
+    skills,
+    company,
+  } = body;
   if (
     !title ||
     !type ||
@@ -21,7 +29,8 @@ export async function POST(req: Request, res: Request) {
     !salary ||
     !description ||
     !requirements ||
-    !skills
+    !skills ||
+    !company
   ) {
     return new NextResponse("Provide all fields", { status: 400 });
   }
@@ -42,6 +51,7 @@ export async function POST(req: Request, res: Request) {
         title,
         type,
         location,
+        company,
         salary,
         description,
         requirements,

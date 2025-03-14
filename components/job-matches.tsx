@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,89 +14,83 @@ import { Progress } from "@/components/ui/progress";
 import { Briefcase, Building, MapPin } from "lucide-react";
 
 export function JobMatches() {
-  const jobs = [
-    {
-      id: 1,
-      title: "Senior Frontend Developer",
-      company: "Acme Inc",
-      location: "Remote",
-      type: "Full-time",
-      posted: "2 days ago",
-      matchScore: 95,
-      salary: "$120,000 - $150,000",
-      skills: ["React", "TypeScript", "Next.js"],
-    },
-    {
-      id: 2,
-      title: "Frontend Engineer",
-      company: "TechCorp",
-      location: "New York, NY",
-      type: "Full-time",
-      posted: "1 week ago",
-      matchScore: 88,
-      salary: "$100,000 - $130,000",
-      skills: ["React", "JavaScript", "CSS"],
-    },
-    {
-      id: 3,
-      title: "UI Developer",
-      company: "DesignHub",
-      location: "San Francisco, CA",
-      type: "Contract",
-      posted: "3 days ago",
-      matchScore: 82,
-      salary: "$90/hr",
-      skills: ["React", "Tailwind CSS", "Figma"],
-    },
-  ];
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchMatchData = async () => {
+      try {
+        const response = await axios.get("/api/matchingai");
+        setJobs(response.data);
+      } catch (error) {
+        console.error("Error fetching match results:", error);
+      }
+    };
+    fetchMatchData();
+  }, []);
 
   return (
     <div className="grid gap-4">
       {jobs.map((job) => (
-        <Card key={job.id}>
+        <Card key={job.jobId}>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-start">
               <div>
-                <CardTitle>{job.title}</CardTitle>
-                <CardDescription className="flex items-center gap-1">
-                  <Building className="h-3 w-3" /> {job.company} •{" "}
-                  <MapPin className="h-3 w-3" /> {job.location}
+                <CardTitle>{job.jobTitle}</CardTitle>
+                <CardDescription className="flex items-center gap-1 mt-2">
+                  <Building className="h-3 w-3" /> {job.company}
                 </CardDescription>
               </div>
               <div className="flex flex-col items-end">
                 <span className="text-sm font-medium">
-                  {job.matchScore}% Match
+                  {job.matchPercentage}% Match
                 </span>
-                <Progress value={job.matchScore} className="h-2 w-24" />
+                <Progress value={job.matchPercentage} className="w-[100%] " />
               </div>
             </div>
           </CardHeader>
           <CardContent className="pb-2">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline">{job.type}</Badge>
-              <span className="text-sm text-muted-foreground">
-                {job.salary}
-              </span>
+            <div className="mb-2">
+              <span className="font-medium">Matching Skills:</span>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {job.matchingSkills.length > 0 ? (
+                  job.matchingSkills.map((skill) => (
+                    <Badge key={skill} variant="outline" className="text-xs">
+                      {skill}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-xs text-gray-500">
+                    No matching skills
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {job.skills.map((skill) => (
-                <Badge key={skill} variant="secondary" className="text-xs">
-                  {skill}
-                </Badge>
-              ))}
+            <div className="mb-2">
+              <span className="font-medium">Missing Skills:</span>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {job.missingSkills.length > 0 ? (
+                  job.missingSkills.map((skill) => (
+                    <Badge key={skill} variant="outline" className="text-xs">
+                      {skill}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-xs text-black">None</span>
+                )}
+              </div>
             </div>
+            {job.improvementSuggestions && (
+              <div className="mt-2 text-sm text-muted-foreground">
+                <span className="text-lg font-bold">Suggestions:</span>{" "}
+                {job.improvementSuggestions}
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex justify-between pt-2">
-            <div className="flex items-center text-sm text-muted-foreground">
-              <Briefcase className="mr-1 h-4 w-4" />
-              Posted {job.posted}
-            </div>
-            <div className="flex gap-2">
-              <Button size="sm" variant="outline">
-                View Details
-              </Button>
-              <Button size="sm">Apply Now</Button>
-            </div>
+            <Button size="sm" variant="outline">
+              View Details
+            </Button>
+            <Button size="sm">Apply Now</Button>
           </CardFooter>
         </Card>
       ))}

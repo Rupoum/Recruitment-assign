@@ -41,6 +41,7 @@ export function JobListings() {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{job.title}</CardTitle>
+                <h3>{job.company}</h3>
                 <CardDescription>Location : {job.location}</CardDescription>
               </div>
               <Badge variant="outline">Type: {job.type}</Badge>

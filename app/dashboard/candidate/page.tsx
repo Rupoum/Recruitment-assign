@@ -14,12 +14,14 @@ import { useEffect, useState } from "react";
 import AllJobs from "@/components/all-jobs";
 export default function CandidateDashboard() {
   const [userData, setUserData] = useState(null);
+  const [ai, setAi] = useState("");
   const session = useSession();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get("/api/candidate/profile");
+
         setUserData(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -28,6 +30,7 @@ export default function CandidateDashboard() {
 
     fetchUserData();
   }, []);
+
   console.log(userData);
 
   return (
