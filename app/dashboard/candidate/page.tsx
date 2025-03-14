@@ -9,10 +9,26 @@ import { ApplicationStatus } from "@/components/application-status";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { ResumePreview } from "@/components/resume-preview";
-
+import axios from "axios";
+import { useEffect, useState } from "react";
 export default function CandidateDashboard() {
+  const [userData, setUserData] = useState(null);
   const session = useSession();
-  console.log(JSON.stringify(session.data?.user));
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("/api/candidate/profile");
+        setUserData(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+  console.log(userData);
+
   return (
     <DashboardShell>
       <DashboardHeader
@@ -35,7 +51,7 @@ export default function CandidateDashboard() {
           <TabsTrigger value="applications">Applications</TabsTrigger>
         </TabsList>
         <TabsContent value="profile" className="space-y-4">
-          <ResumePreview />
+          <ResumePreview userData={userData} />
         </TabsContent>
         <TabsContent value="matches" className="space-y-4">
           <JobMatches />

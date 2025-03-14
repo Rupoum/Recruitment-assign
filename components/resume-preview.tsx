@@ -9,106 +9,44 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Edit, FileText } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export function ResumePreview() {
-  const resumeData = {
-    personalInfo: {
-      name: "Alex Johnson",
-      title: "Senior Frontend Developer",
-      email: "alex.johnson@example.com",
-      phone: "(555) 123-4567",
-      location: "San Francisco, CA",
-      summary:
-        "Experienced frontend developer with 8+ years of experience building responsive and accessible web applications. Specialized in React, TypeScript, and modern frontend frameworks.",
-    },
-    skills: [
-      "React",
-      "TypeScript",
-      "JavaScript",
-      "HTML5",
-      "CSS3",
-      "Next.js",
-      "Redux",
-      "Tailwind CSS",
-      "GraphQL",
-      "Jest",
-      "Responsive Design",
-      "Accessibility",
-      "Performance Optimization",
-    ],
-    experience: [
-      {
-        title: "Senior Frontend Developer",
-        company: "TechCorp",
-        location: "San Francisco, CA",
-        startDate: "2020-03",
-        endDate: "Present",
-        description:
-          "Lead frontend development for the company's main product. Implemented new features, improved performance, and mentored junior developers.",
-      },
-      {
-        title: "Frontend Engineer",
-        company: "WebSolutions Inc.",
-        location: "New York, NY",
-        startDate: "2017-06",
-        endDate: "2020-02",
-        description:
-          "Developed and maintained multiple client websites. Worked closely with designers to implement pixel-perfect UIs.",
-      },
-      {
-        title: "Web Developer",
-        company: "Digital Agency",
-        location: "Boston, MA",
-        startDate: "2015-01",
-        endDate: "2017-05",
-        description:
-          "Built responsive websites for various clients using modern web technologies.",
-      },
-    ],
-    education: [
-      {
-        degree: "Bachelor of Science in Computer Science",
-        institution: "University of California, Berkeley",
-        location: "Berkeley, CA",
-        graduationDate: "2014-05",
-      },
-    ],
+export function ResumePreview(props) {
+  // const router = useRouter();
+  const download = () => {
+    if (props.userData?.resumeUrl) {
+      window.open(props.userData.resumeUrl);
+    } else {
+      console.error("Resume URL not found");
+    }
   };
-
-  const download = async () => {};
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Resume Preview</h2>
-        <Button variant="outline">
-          <Edit className="mr-2 h-4 w-4" />
-          Edit Resume
-        </Button>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-2xl">
-                {resumeData.personalInfo.name}
-              </CardTitle>
+              <CardTitle className="text-2xl">{props.userData?.name}</CardTitle>
               <CardDescription className="text-lg">
-                {resumeData.personalInfo.title}
+                {props.userData?.title}
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={() => download}>
+            <Button variant="outline" size="sm" onClick={download}>
               <FileText className="mr-2 h-4 w-4" />
-              Download PDF
+              Resume Link
             </Button>
           </div>
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mt-2">
-            <span>{resumeData.personalInfo.email}</span>
+            <span>{props.userData?.email}</span>
             <span>•</span>
-            <span>{resumeData.personalInfo.phone}</span>
+            <span>{props.userData?.phone}</span>
             <span>•</span>
-            <span>{resumeData.personalInfo.location}</span>
+            <span>{props.userData?.location}</span>
           </div>
         </CardHeader>
         <CardContent>
@@ -121,12 +59,12 @@ export function ResumePreview() {
             </TabsList>
 
             <TabsContent value="summary" className="space-y-4">
-              <p>{resumeData.personalInfo.summary}</p>
+              <p>{props.userData?.summary}</p>
             </TabsContent>
 
             <TabsContent value="skills" className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                {resumeData.skills.map((skill) => (
+                {props.userData?.skills.map((skill) => (
                   <Badge key={skill} variant="secondary">
                     {skill}
                   </Badge>
@@ -135,7 +73,7 @@ export function ResumePreview() {
             </TabsContent>
 
             <TabsContent value="experience" className="space-y-4">
-              {resumeData.experience.map((exp, index) => (
+              {props.userData?.experience.map((exp, index) => (
                 <div
                   key={index}
                   className="border-b pb-4 last:border-0 last:pb-0"
@@ -163,14 +101,14 @@ export function ResumePreview() {
             </TabsContent>
 
             <TabsContent value="education" className="space-y-4">
-              {resumeData.education.map((edu, index) => (
+              {props.userData?.education.map((edu, index) => (
                 <div key={index}>
                   <h3 className="font-bold">{edu.degree}</h3>
                   <div className="text-sm text-muted-foreground">
                     {edu.institution} • {edu.location}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Graduated:{" "}
+                    Graduation:{" "}
                     {new Date(edu.graduationDate).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",

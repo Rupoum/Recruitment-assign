@@ -18,11 +18,11 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 export function ResumeParser() {
   const session = useSession();
   console.log(session.data?.user?.email);
-
+  const router = useRouter();
   const userEmail = session.data?.user?.email;
   const [parsedData, setParsedData] = useState({
     personalInfo: {
@@ -37,7 +37,8 @@ export function ResumeParser() {
     experience: [],
     education: [],
   });
-
+  const [sent, setSent] = useState(false);
+  const [fetch, setFetch] = useState(false);
   const fetchData = async () => {
     const data = await axios.get("/api/aidata");
 
@@ -57,6 +58,8 @@ export function ResumeParser() {
       experience: dataRec.Experience || [],
       education: Array.isArray(dataRec.Education) ? dataRec.Education : [],
     });
+
+    setFetch(true);
   };
 
   const [newSkill, setNewSkill] = useState("");
@@ -91,6 +94,8 @@ export function ResumeParser() {
     });
 
     console.log("sendData", data);
+    setSent(true);
+    router.push("/dashboard/candidate");
   };
 
   return (
@@ -108,7 +113,7 @@ export function ResumeParser() {
             className="text-sm mb-3 w-fit h-auto bg-green-300 px-2 py-2 text-center rounded-3xl shadow-2xs shadow-green-300 hover:shadow-green-800 cursor-pointer "
             onClick={fetchData}
           >
-            Fetch data from resume
+            {fetch ? "Filled Data " : "Fill Data using Ai"}
           </button>
 
           <Tabs defaultValue="personal" className="space-y-4">
@@ -385,7 +390,7 @@ export function ResumeParser() {
         </CardContent>
         <CardFooter className="flex justify-between">
           <Button variant="outline">Reset to Original</Button>
-          <Button onClick={PostData}>Save Profile</Button>
+          <Button onClick={PostData}>{sent ? "Saved" : "Save Profile"}</Button>
         </CardFooter>
       </Card>
     </div>
