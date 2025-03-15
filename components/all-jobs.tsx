@@ -15,7 +15,7 @@ import { Briefcase, Building, Eye, MapPin } from "lucide-react";
 import { Badge } from "./ui/badge";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-const AllJobs = () => {
+const AllJobs = ({ applied }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const AllJobs = () => {
 
     fetchData();
   }, []);
-  console.log(data);
+  // console.log(data, "data");
   return (
     <div className="grid gap-4">
       {data.map((job) => (
@@ -66,9 +66,15 @@ const AllJobs = () => {
               {formatDistanceToNow(new Date(job.createdAt))} ago
             </div>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline">
-                Apply Now
-              </Button>
+              {applied.includes(job.id) ? (
+                <Button size="sm" variant="outline" disabled>
+                  Applied Already
+                </Button>
+              ) : (
+                <Button size="sm" onClick={() => handleApplication(job.jobId)}>
+                  Apply
+                </Button>
+              )}
             </div>
           </CardFooter>
         </Card>

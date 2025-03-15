@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Briefcase, Building, MapPin } from "lucide-react";
 
-export function JobMatches() {
+export function JobMatches({ applied }) {
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
@@ -28,6 +28,23 @@ export function JobMatches() {
     fetchMatchData();
   }, []);
 
+  // console.log(jobs[0].jobId);
+  console.log(applied);
+
+  // console.log(props.applied?.applied);
+
+  const handleApplication = async (jobId) => {
+    console.log("Applying for job:", jobId);
+    try {
+      const response = await axios.post("/api/application", {
+        jobId,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error applying for job:", error);
+    }
+  };
   return (
     <div className="grid gap-4">
       {jobs.map((job) => (
@@ -90,7 +107,15 @@ export function JobMatches() {
             <Button size="sm" variant="outline">
               View Details
             </Button>
-            <Button size="sm">Apply Now</Button>
+            {applied.includes(job.jobId) ? (
+              <Button size="sm" variant="outline" disabled>
+                Applied Already
+              </Button>
+            ) : (
+              <Button size="sm" onClick={() => handleApplication(job.jobId)}>
+                Apply
+              </Button>
+            )}
           </CardFooter>
         </Card>
       ))}

@@ -35,6 +35,16 @@ export async function GET() {
     },
   });
 
+  const applied = await prisma.userProfile.findUnique({
+    where: {
+      userEmail: email || undefined,
+    },
+    select: {
+      applied: true,
+    },
+  });
+  console.log(applied);
+
   if (!userProfile) {
     return new NextResponse("No Profile Data", { status: 404 });
   }
@@ -42,10 +52,12 @@ export async function GET() {
   //nopt needed now might use later to add more data
   const userData = {
     ...user,
+
     userProfile,
   };
   const userwithResume = {
     ...userProfile,
+    ...applied,
     resumeUrl,
   };
   return new NextResponse(JSON.stringify(userwithResume), {

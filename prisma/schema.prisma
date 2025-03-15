@@ -57,15 +57,16 @@ model Job {
 }
 
 model UserProfile {
-    id        String  @id @default(auto()) @map("_id") @db.ObjectId
-    user      User    @relation(fields: [userEmail], references: [email])
-    userEmail String  @unique
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    user      User     @relation(fields: [userEmail], references: [email])
+    userEmail String   @unique
     name      String
     title     String?
     email     String?
     phone     String?
     location  String?
     summary   String?
+    applied   String[] @default([])
 
     skills     String[]     @default([])
     experience Experience[]

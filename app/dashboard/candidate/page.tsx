@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import AllJobs from "@/components/all-jobs";
 export default function CandidateDashboard() {
   const [userData, setUserData] = useState(null);
+  const [applied, setApplied] = useState(null);
   const [ai, setAi] = useState("");
   const session = useSession();
 
@@ -23,6 +24,7 @@ export default function CandidateDashboard() {
         const response = await axios.get("/api/candidate/profile");
 
         setUserData(response.data);
+        setApplied(response.data.applied);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -32,6 +34,7 @@ export default function CandidateDashboard() {
   }, []);
 
   console.log(userData);
+  // console.log(applied);
 
   return (
     <DashboardShell>
@@ -59,13 +62,13 @@ export default function CandidateDashboard() {
           <ResumePreview userData={userData} />
         </TabsContent>
         <TabsContent value="alljobs" className="space-y-4">
-          <AllJobs />
+          <AllJobs applied={applied} />
         </TabsContent>
         <TabsContent value="matches" className="space-y-4">
-          <JobMatches />
+          <JobMatches applied={applied} />
         </TabsContent>
         <TabsContent value="applications" className="space-y-4">
-          <ApplicationStatus />
+          <ApplicationStatus applied={applied} />
         </TabsContent>
       </Tabs>
     </DashboardShell>
