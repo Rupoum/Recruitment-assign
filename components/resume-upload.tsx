@@ -24,6 +24,7 @@ export default function UploadResume() {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const session = useSession();
   console.log(session.data?.user?.email);
 
@@ -61,6 +62,7 @@ export default function UploadResume() {
     console.log("clicked");
     if (file) {
       try {
+        setLoading(true);
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = async () => {
@@ -73,6 +75,7 @@ export default function UploadResume() {
 
           if (response.status === 200) {
             setIsUploaded(true);
+            setLoading(false);
             toast.success("Resume uploaded successfully!", {
               description:
                 "Your resume has been parsed and added to your profile.",
@@ -80,6 +83,7 @@ export default function UploadResume() {
           }
         };
       } catch (error) {
+        setLoading(false);
         toast.error("Error uploading file", {
           description: "Please try again.",
         });
@@ -177,7 +181,7 @@ export default function UploadResume() {
                         className="hover:bg-black hover:text-white"
                         onClick={handleUpload}
                       >
-                        {isUploaded ? "Uploaded" : "Upload"}{" "}
+                        {loading ? "Uploading" : "Upload"}{" "}
                       </Button>
                     )}
                   </>
