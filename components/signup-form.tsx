@@ -18,11 +18,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") || "candidate";
   const [role, setRole] = useState(defaultRole);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -33,6 +35,7 @@ export default function RegisterPage() {
 
   const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const redirect =
       data.role === "candidate"
         ? "/dashboard/candidate"
@@ -40,14 +43,25 @@ export default function RegisterPage() {
     const endpoint =
       data.role === "candidate" ? "/api/signup/user" : "/api/signup/recruiter";
     try {
+      setLoading(true);
       const response = await axios.post(endpoint, data);
       const userData = response.data;
       console.log(userData);
+      toast.success("Account created successfully", {
+        description: "Redirecting shortly",
+      });
+      setLoading(false);
       if (response.status === 200) {
         router.push(`${redirect}`);
       }
     } catch (error) {
       console.error("Error registering user:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      toast.error("Error registering user", {
+        description: errorMessage,
+      });
+      setLoading(false);
     }
   };
 
@@ -141,12 +155,12 @@ export default function RegisterPage() {
               </RadioGroup>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-4">
             <Button
               type="submit"
               className="w-full text-black shadow-black shadow-sm"
             >
-              Create account
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </CardFooter>
         </form>

@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const JobForm = () => {
   const [jobTitle, setJobTitle] = useState("");
@@ -67,9 +68,11 @@ const JobForm = () => {
     try {
       const response = await axios.post("/api/jobs", jobData);
       console.log("JobPosted successfully ", response.data);
+      toast.success("Job posted successfully");
       setLoading(false);
       router.push("/dashboard/recruiter");
     } catch (e) {
+      toast.error("Error posting job");
       console.error("Error posting job", e);
       setLoading(false);
     }

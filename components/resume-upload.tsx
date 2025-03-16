@@ -18,6 +18,7 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResumeParser } from "@/components/resume-parser";
+import { toast } from "sonner";
 
 export default function UploadResume() {
   const [file, setFile] = useState<File | null>(null);
@@ -72,9 +73,16 @@ export default function UploadResume() {
 
           if (response.status === 200) {
             setIsUploaded(true);
+            toast.success("Resume uploaded successfully!", {
+              description:
+                "Your resume has been parsed and added to your profile.",
+            });
           }
         };
       } catch (error) {
+        toast.error("Error uploading file", {
+          description: "Please try again.",
+        });
         console.error("Error uploading file:", error);
       }
     }

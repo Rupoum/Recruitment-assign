@@ -19,6 +19,7 @@ import { Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface PersonalInfo {
   name: string;
@@ -137,8 +138,10 @@ export function ResumeParser() {
 
       console.log("sendData", data);
       setSent(true);
+      toast.success("Profile saved successfully");
       router.push("/dashboard/candidate");
     } catch (error) {
+      toast.error("Error saving profile");
       console.error("Error posting data:", error);
     } finally {
       setLoading(false);

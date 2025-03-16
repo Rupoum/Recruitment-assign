@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import { ArrowRight, FileText, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 // const date = new Date().getFullYear();
 
 export default function Home() {
@@ -34,6 +36,12 @@ export default function Home() {
               Our AI-powered platform analyzes resumes, matches candidates to
               jobs, and helps both recruiters and job seekers make better
               connections.
+            </p>
+            <p>
+              Powered By
+              <span className="text-3xl ml-2  bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                Gemini Ai
+              </span>{" "}
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Button asChild size="lg" className="bg-black text-white">

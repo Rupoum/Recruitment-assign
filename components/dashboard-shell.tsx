@@ -4,6 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { signIn, signOut } from "next-auth/react";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 interface DashboardShellProps {
   children: React.ReactNode;
 }
@@ -41,14 +42,11 @@ export function DashboardShell({ children }: DashboardShellProps) {
           </div>
           <nav className="flex items-center gap-4">
             <Link
-              href={"/dashboard/profile"}
+              href={""}
               className="text-sm font-medium hover:underline"
-            >
-              Profile
-            </Link>
-            <Link
-              href={"/dashboard/settings"}
-              className="text-sm font-medium hover:underline"
+              onClick={() => {
+                toast.error("Settings not available yet", {});
+              }}
             >
               Settings
             </Link>
@@ -61,25 +59,34 @@ export function DashboardShell({ children }: DashboardShellProps) {
           <div className="h-full py-6 pr-6 lg:py-8">
             <nav className="flex flex-col space-y-2">
               <Link
-                href="/dashboard"
+                href=""
                 className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Dashboard
               </Link>
               <Link
-                href="/dashboard/profile"
+                href=""
+                onClick={() => {
+                  toast.error("Profile not available yet", {});
+                }}
                 className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Profile
               </Link>
               <Link
-                href="/dashboard/messages"
+                href=""
+                onClick={() => {
+                  toast.error("Comming Soon !");
+                }}
                 className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Messages
               </Link>
               <Link
-                href="/dashboard/settings"
+                href=""
+                onClick={() => {
+                  toast.error("Not available yet");
+                }}
                 className="flex items-center gap-2 rounded-lg px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Settings

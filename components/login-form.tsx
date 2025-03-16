@@ -23,6 +23,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const defaultRole = searchParams.get("role") || "candidate";
   const [role, setRole] = useState(defaultRole);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -32,6 +33,7 @@ export default function LoginPage() {
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const result = await signIn("credentials", {
       ...data,
       redirect: false,
@@ -138,9 +140,9 @@ export default function LoginPage() {
               </RadioGroup>
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-3">
             <Button type="submit" className="w-full shadow-black shadow-sm">
-              Login
+              {loading ? "Logging in..." : "Log in"}
             </Button>
           </CardFooter>
         </form>

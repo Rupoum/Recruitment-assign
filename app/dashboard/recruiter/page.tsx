@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 
@@ -10,6 +11,7 @@ import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Analytics } from "@/components/recruiter-analytics";
 import CandidateMatches from "@/components/candidiate-matches";
+import { toast } from "sonner";
 
 export default function RecruiterDashboard() {
   return (
@@ -42,6 +44,9 @@ export default function RecruiterDashboard() {
           <TabsTrigger
             value="analytics"
             className="data-[state=active]:bg-green-300"
+            onClick={() => {
+              toast.error("Analytics not available yet", {});
+            }}
           >
             Analytics
           </TabsTrigger>
@@ -53,7 +58,8 @@ export default function RecruiterDashboard() {
           <CandidateMatches />
         </TabsContent>
         <TabsContent value="analytics" className="space-y-4">
-          <Analytics />
+          {/* <Analytics /> */}
+          <div>Not Available !</div>
         </TabsContent>
       </Tabs>
     </DashboardShell>

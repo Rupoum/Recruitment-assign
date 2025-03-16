@@ -15,6 +15,7 @@ import { Briefcase, Building, Eye, MapPin } from "lucide-react";
 import { Badge } from "./ui/badge";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 interface Job {
   id: string;
   title: string;
@@ -55,9 +56,10 @@ const AllJobs: React.FC<AllJobsProps> = ({ applied }) => {
       const response = await axios.post("/api/application", {
         jobId,
       });
-
+      toast.success("Applied for job successfully");
       console.log(response.data);
     } catch (error) {
+      toast.error("Error applying for job");
       console.error("Error applying for job:", error);
     }
   };
