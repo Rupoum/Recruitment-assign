@@ -113,8 +113,8 @@ export default function UploadResume() {
             <CardHeader>
               <CardTitle>Upload Your Resume</CardTitle>
               <CardDescription>
-                We support PDF, DOCX, and TXT formats. Your resume will be
-                parsed automatically.
+                We support PDF formats only. Your resume will be parsed
+                automatically.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -165,7 +165,9 @@ export default function UploadResume() {
                         Upload a different file
                       </Button>
                     ) : (
-                      <Button onClick={handleUpload}>Upload</Button>
+                      <Button onClick={handleUpload}>
+                        {isUploaded ? "Uploaded" : "Upload"}{" "}
+                      </Button>
                     )}
                   </>
                 )}

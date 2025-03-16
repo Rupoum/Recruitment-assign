@@ -24,13 +24,17 @@ interface Application {
 
 export function ApplicationStatus() {
   const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchApplications = async () => {
+      setLoading(true);
       try {
         const response = await axios.get("/api/application");
         setApplications(response.data);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching application data:", error);
       }
     };
@@ -38,12 +42,15 @@ export function ApplicationStatus() {
     fetchApplications();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <Tabs defaultValue="all" className="space-y-4">
       <TabsList>
         <TabsTrigger value="all">All Applications</TabsTrigger>
-        <TabsTrigger value="active">Active</TabsTrigger>
-        <TabsTrigger value="archived">Archived</TabsTrigger>
+        {/* <TabsTrigger value="active">Active</TabsTrigger>
+        <TabsTrigger value="archived">Archived</TabsTrigger> */}
       </TabsList>
       <TabsContent value="all" className="space-y-4">
         {applications.map((app) => (

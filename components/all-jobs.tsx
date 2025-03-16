@@ -31,14 +31,18 @@ interface AllJobsProps {
 }
 const AllJobs: React.FC<AllJobsProps> = ({ applied }) => {
   const [data, setData] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get("/api/alljobs");
         setData(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching job data:", error);
+        setLoading(false);
       }
     };
 
@@ -57,6 +61,9 @@ const AllJobs: React.FC<AllJobsProps> = ({ applied }) => {
       console.error("Error applying for job:", error);
     }
   };
+
+  if (loading) return <div>Loading ....</div>;
+
   return (
     <div className="grid gap-4">
       {data.map((job) => (

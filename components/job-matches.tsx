@@ -26,14 +26,18 @@ interface JobMatchesProps {
 }
 export const JobMatches: React.FC<JobMatchesProps> = ({ applied }) => {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMatchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get("/api/matchingai");
         setJobs(response.data);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching match results:", error);
+        setLoading(false);
       }
     };
     fetchMatchData();
@@ -56,6 +60,11 @@ export const JobMatches: React.FC<JobMatchesProps> = ({ applied }) => {
       console.error("Error applying for job:", error);
     }
   };
+
+  if (loading) {
+    return <div>Loading ....</div>;
+  }
+
   return (
     <div className="grid gap-4">
       {jobs.map((job) => (

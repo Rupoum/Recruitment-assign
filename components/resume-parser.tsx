@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface PersonalInfo {
   name: string;
@@ -53,9 +54,11 @@ interface ParsedData {
 
 export function ResumeParser() {
   const session = useSession();
+  const router = useRouter();
   console.log(session.data?.user?.email);
 
   const userEmail = session.data?.user?.email;
+
   const [parsedData, setParsedData] = useState<ParsedData>({
     personalInfo: {
       name: "",
@@ -70,28 +73,36 @@ export function ResumeParser() {
     education: [],
   });
 
-  const fetchData = async () => {
-    const data = await axios.get("/api/aidata");
-
-    const dataRec = data.data;
-    console.log(dataRec);
-
-    setParsedData({
-      personalInfo: {
-        name: dataRec.Name,
-        title: dataRec.Title,
-        email: dataRec.Email,
-        phone: dataRec.Phone,
-        location: dataRec.Location,
-        summary: dataRec.Summary,
-      },
-      skills: dataRec.Skills,
-      experience: dataRec.Experience,
-      education: dataRec.Education,
-    });
-  };
-
   const [newSkill, setNewSkill] = useState("");
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const data = await axios.get("/api/aidata");
+      const dataRec = data.data;
+      console.log(dataRec);
+
+      setParsedData({
+        personalInfo: {
+          name: dataRec.Name,
+          title: dataRec.Title,
+          email: dataRec.Email,
+          phone: dataRec.Phone,
+          location: dataRec.Location,
+          summary: dataRec.Summary,
+        },
+        skills: dataRec.Skills,
+        experience: dataRec.Experience,
+        education: dataRec.Education,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addSkill = () => {
     if (
@@ -113,6 +124,27 @@ export function ResumeParser() {
     });
   };
 
+  const PostData = async () => {
+    setLoading(true);
+    try {
+      console.log("clicked");
+      console.log("parsedData", parsedData);
+
+      const data = await axios.post("/api/aidata", {
+        email: userEmail,
+        data: parsedData,
+      });
+
+      console.log("sendData", data);
+      setSent(true);
+      router.push("/dashboard/candidate");
+    } catch (error) {
+      console.error("Error posting data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -127,8 +159,9 @@ export function ResumeParser() {
           <button
             className="text-sm mb-3 w-fit h-auto bg-green-300 px-2 py-2 text-center rounded-3xl shadow-2xs shadow-green-300 hover:shadow-green-800 cursor-pointer "
             onClick={fetchData}
+            disabled={loading}
           >
-            Fetch data from resume
+            {loading ? "Fetching data..." : "Fetch data from resume"}
           </button>
 
           <Tabs defaultValue="personal" className="space-y-4">
@@ -359,10 +392,6 @@ export function ResumeParser() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Experience
-              </Button>
             </TabsContent>
 
             <TabsContent value="education" className="space-y-4">
@@ -399,16 +428,18 @@ export function ResumeParser() {
                   </CardContent>
                 </Card>
               ))}
-              <Button variant="outline" className="w-full">
+              {/* <Button variant="outline" className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Education
-              </Button>
+              </Button> */}
             </TabsContent>
           </Tabs>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline">Reset to Original</Button>
-          <Button>Save Profile</Button>
+          {/* <Button variant="outline">Reset to Original</Button> */}
+          <Button onClick={PostData} variant={"outline"} disabled={loading}>
+            {loading ? "Saving..." : sent ? "Saved" : "Save Profile"}
+          </Button>
         </CardFooter>
       </Card>
     </div>
