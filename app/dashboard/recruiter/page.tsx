@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { JobListings } from "@/components/job-listings";
-import { CandidateMatches } from "@/components/candidiate-matches";
+// import { CandidateMatches } from "@/components/candidiate-matches";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { Analytics } from "@/components/recruiter-analytics";
+import CandidateMatches from "@/components/candidiate-matches";
 
 export default function RecruiterDashboard() {
   return (
@@ -33,10 +34,10 @@ export default function RecruiterDashboard() {
             Job Listings
           </TabsTrigger>
           <TabsTrigger
-            value="candidates"
+            value="applications"
             className="data-[state=active]:bg-green-300"
           >
-            Candidate Matches
+            Applications
           </TabsTrigger>
           <TabsTrigger
             value="analytics"
@@ -48,7 +49,7 @@ export default function RecruiterDashboard() {
         <TabsContent value="jobs" className="space-y-4">
           <JobListings />
         </TabsContent>
-        <TabsContent value="candidates" className="space-y-4">
+        <TabsContent value="applications" className="space-y-4">
           <CandidateMatches />
         </TabsContent>
         <TabsContent value="analytics" className="space-y-4">

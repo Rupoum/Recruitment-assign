@@ -48,12 +48,14 @@ model Job {
     description  String?
     requirements String?
     skills       String[]
+    applicants   String[] @default([])
 
     recruiterId String    @unique
     recruiter   Recruiter @relation(fields: [recruiterId], references: [email])
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    UserProfile UserProfile[]
 }
 
 model UserProfile {
@@ -74,6 +76,8 @@ model UserProfile {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    Job       Job?     @relation(fields: [jobId], references: [id])
+    jobId     String?  @db.ObjectId
 }
 
 model Experience {

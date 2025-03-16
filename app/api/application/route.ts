@@ -38,8 +38,20 @@ export async function POST(req: NextResponse, res: NextResponse) {
         },
       },
     });
-
-    return new NextResponse(JSON.stringify(updateProfile), { status: 200 });
+    const updateJob = await prisma.job.update({
+      where: {
+        id: jobId,
+      },
+      data: {
+        applicants: {
+          push: user.id,
+        },
+      },
+    });
+    console.log(updateJob);
+    return new NextResponse(JSON.stringify(updateProfile, updateJob), {
+      status: 200,
+    });
   } catch (error) {
     console.error("Error updating user Profile", error);
     return new NextResponse("Internal Server Error", { status: 500 });

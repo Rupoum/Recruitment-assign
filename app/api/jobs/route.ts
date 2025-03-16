@@ -92,7 +92,35 @@ export async function GET(req: Request, res: Request) {
       },
     },
   });
-  return new NextResponse(JSON.stringify(jobs), { status: 200 });
+
+  const jobsWithApplicants = await Promise.all(
+    jobs.map(async (job) => {
+      const applicants = await prisma.userProfile.findMany({
+        where: {
+          id: {
+            in: job.applicants,
+          },
+        },
+        include: {
+          user: {
+            select: {
+              fileUrl: true,
+            },
+          },
+        },
+      });
+
+      return {
+        ...job,
+        applicants: applicants.map((applicant) => ({
+          ...applicant,
+          fileUrl: applicant.user.fileUrl,
+        })),
+      };
+    })
+  );
+  // console.log(jobsWithApplicants, "applicants details");
+  return new NextResponse(JSON.stringify(jobsWithApplicants), { status: 200 });
 
   return new NextResponse("Hello", { status: 200 });
 }
