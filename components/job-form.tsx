@@ -33,10 +33,11 @@ const JobForm = () => {
   const [salary, setSalary] = useState("");
   const [description, setDescription] = useState("");
   const [requirements, setRequirements] = useState("");
-  const [skills, setSkills] = useState([]);
+  const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
   const addSkill = () => {
     if (newSkill.trim() !== "" && !skills.includes(newSkill.trim())) {
       setSkills([...skills, newSkill.trim()]);
@@ -44,11 +45,11 @@ const JobForm = () => {
     }
   };
 
-  const removeSkill = (skillToRemove) => {
+  const removeSkill = (skillToRemove: string) => {
     setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const jobData = {
       title: jobTitle,

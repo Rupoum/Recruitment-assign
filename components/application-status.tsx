@@ -11,9 +11,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
+interface Application {
+  id: string;
+  title: string;
+  location: string;
+  salary: string;
+  type: string;
+  requirements: string;
+  skills: string[];
+  recruiterId: string;
+}
 
 export function ApplicationStatus() {
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState<Application[]>([]);
 
   useEffect(() => {
     const fetchApplications = async () => {

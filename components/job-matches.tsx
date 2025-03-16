@@ -12,9 +12,20 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Briefcase, Building, MapPin } from "lucide-react";
-
-export function JobMatches({ applied }) {
-  const [jobs, setJobs] = useState([]);
+interface Job {
+  jobId: string;
+  jobTitle: string;
+  company: string;
+  matchPercentage: number;
+  matchingSkills: string[];
+  missingSkills: string[];
+  improvementSuggestions?: string;
+}
+interface JobMatchesProps {
+  applied: string[];
+}
+export const JobMatches: React.FC<JobMatchesProps> = ({ applied }) => {
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
     const fetchMatchData = async () => {
@@ -33,7 +44,7 @@ export function JobMatches({ applied }) {
 
   // console.log(props.applied?.applied);
 
-  const handleApplication = async (jobId) => {
+  const handleApplication = async (jobId: string) => {
     console.log("Applying for job:", jobId);
     try {
       const response = await axios.post("/api/application", {
@@ -121,4 +132,4 @@ export function JobMatches({ applied }) {
       ))}
     </div>
   );
-}
+};

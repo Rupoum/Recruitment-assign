@@ -31,7 +31,7 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-  const registerUser = async (e) => {
+  const registerUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const redirect =
       data.role === "candidate"
@@ -61,89 +61,95 @@ export default function RegisterPage() {
         <span className="text-xl font-bold">ResuMatch</span>
       </Link>
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
-            Enter your information to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              value={data.email}
-              onChange={(e) => {
-                setData((prev) => ({ ...prev, email: e.target.value }));
-              }}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={data.password}
-              onChange={(e) => {
-                setData((prev) => ({ ...prev, password: e.target.value }));
-              }}
-            />
-          </div>
+        <form onSubmit={registerUser}>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">Create an account</CardTitle>
+            <CardDescription>
+              Enter your information to create your account
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={data.email}
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, email: e.target.value }));
+                }}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={data.password}
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, password: e.target.value }));
+                }}
+              />
+            </div>
 
-          <div className="grid gap-2">
-            <Label>Account Type</Label>
-            <RadioGroup
-              defaultValue={role}
-              value={role}
-              onValueChange={(value) => {
-                setRole(value);
-                setData((prev) => ({ ...prev, role: value }));
-              }}
-              className="grid grid-cols-2 gap-4"
+            <div className="grid gap-2">
+              <Label>Account Type</Label>
+              <RadioGroup
+                defaultValue={role}
+                value={role}
+                onValueChange={(value) => {
+                  setRole(value);
+                  setData((prev) => ({ ...prev, role: value }));
+                }}
+                className="grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <RadioGroupItem
+                    value="recruiter"
+                    id="recruiter"
+                    className="peer sr-only"
+                  />
+                  <Label
+                    htmlFor="recruiter"
+                    className={`flex flex-col items-center justify-between rounded-md border-2 p-4 ${
+                      role === "recruiter"
+                        ? "bg-black text-white"
+                        : "bg-popover"
+                    }`}
+                  >
+                    <span>Recruiter</span>
+                  </Label>
+                </div>
+                <div>
+                  <RadioGroupItem
+                    value="candidate"
+                    id="candidate"
+                    className="peer sr-only"
+                  />
+                  <Label
+                    htmlFor="candidate"
+                    className={`flex flex-col items-center justify-between rounded-md border-2 p-4 ${
+                      role === "candidate"
+                        ? "bg-black text-white"
+                        : "bg-popover"
+                    }`}
+                  >
+                    <span>Job Seeker</span>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              className="w-full text-black shadow-black shadow-sm"
             >
-              <div>
-                <RadioGroupItem
-                  value="recruiter"
-                  id="recruiter"
-                  className="peer sr-only"
-                />
-                <Label
-                  htmlFor="recruiter"
-                  className={`flex flex-col items-center justify-between rounded-md border-2 p-4 ${
-                    role === "recruiter" ? "bg-black text-white" : "bg-popover"
-                  }`}
-                >
-                  <span>Recruiter</span>
-                </Label>
-              </div>
-              <div>
-                <RadioGroupItem
-                  value="candidate"
-                  id="candidate"
-                  className="peer sr-only"
-                />
-                <Label
-                  htmlFor="candidate"
-                  className={`flex flex-col items-center justify-between rounded-md border-2 p-4 ${
-                    role === "candidate" ? "bg-black text-white" : "bg-popover"
-                  }`}
-                >
-                  <span>Job Seeker</span>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button
-            className="w-full text-black shadow-black shadow-sm"
-            onClick={registerUser}
-          >
-            Create account
-          </Button>
-        </CardFooter>
+              Create account
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
       <p className="mt-4 text-center text-sm text-muted-foreground">
         Already have an account?{" "}

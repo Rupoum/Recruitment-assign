@@ -19,13 +19,44 @@ import { Plus, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 
+interface PersonalInfo {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+}
+
+interface Experience {
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface Education {
+  degree: string;
+  institution: string;
+  location: string;
+  graduationDate: string;
+}
+
+interface ParsedData {
+  personalInfo: PersonalInfo;
+  skills: string[];
+  experience: Experience[];
+  education: Education[];
+}
+
 export function ResumeParser() {
-  // Will be populated from the resume parsing service in a real app
   const session = useSession();
   console.log(session.data?.user?.email);
 
   const userEmail = session.data?.user?.email;
-  const [parsedData, setParsedData] = useState({
+  const [parsedData, setParsedData] = useState<ParsedData>({
     personalInfo: {
       name: "",
       title: "",
@@ -44,17 +75,6 @@ export function ResumeParser() {
 
     const dataRec = data.data;
     console.log(dataRec);
-    // console.log(
-    //   dataRec.Name,
-    //   dataRec.Title,
-    //   dataRec.Email,
-    //   dataRec.Phone,
-    //   dataRec.Location,
-    //   dataRec.Summary,
-    //   dataRec.Skills,
-    //   dataRec.Experience,
-    //   dataRec.Education
-    // );
 
     setParsedData({
       personalInfo: {
@@ -86,7 +106,7 @@ export function ResumeParser() {
     }
   };
 
-  const removeSkill = (skillToRemove) => {
+  const removeSkill = (skillToRemove: string) => {
     setParsedData({
       ...parsedData,
       skills: parsedData.skills.filter((skill) => skill !== skillToRemove),
@@ -99,7 +119,7 @@ export function ResumeParser() {
         <CardHeader>
           <CardTitle>Review & Edit Parsed Resume</CardTitle>
           <CardDescription>
-            We `&apos;`ve automatically extracted information from your resume.
+            We&apos;ve automatically extracted information from your resume.
             Please review and edit as needed.
           </CardDescription>
         </CardHeader>

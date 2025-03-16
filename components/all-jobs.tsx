@@ -15,8 +15,22 @@ import { Briefcase, Building, Eye, MapPin } from "lucide-react";
 import { Badge } from "./ui/badge";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-const AllJobs = ({ applied }) => {
-  const [data, setData] = useState([]);
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  description: string;
+  skills: string[];
+  createdAt: string;
+  jobId: string;
+}
+interface AllJobsProps {
+  applied: string[];
+}
+const AllJobs: React.FC<AllJobsProps> = ({ applied }) => {
+  const [data, setData] = useState<Job[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +45,18 @@ const AllJobs = ({ applied }) => {
     fetchData();
   }, []);
   // console.log(data, "data");
+  const handleApplication = async (jobId: string) => {
+    console.log("Applying for job:", jobId);
+    try {
+      const response = await axios.post("/api/application", {
+        jobId,
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error applying for job:", error);
+    }
+  };
   return (
     <div className="grid gap-4">
       {data.map((job) => (

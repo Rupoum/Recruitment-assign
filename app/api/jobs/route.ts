@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: Request, res: Request) {
+export async function POST(req: Request) {
   const session = await getServerSession();
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -66,10 +66,13 @@ export async function POST(req: Request, res: Request) {
 
     return new NextResponse(JSON.stringify(job), { status: 200 });
   } catch (e) {
-    return new NextResponse(e, { status: 500 });
+    const errorMessage = e instanceof Error ? e.message : "Unknown error";
+    return new NextResponse(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+    });
   }
 }
-export async function GET(req: Request, res: Request) {
+export async function GET() {
   const session = await getServerSession();
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });

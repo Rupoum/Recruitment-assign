@@ -11,11 +11,52 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Edit, FileText } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export function ResumePreview(props) {
-  // const router = useRouter();
+interface PersonalInfo {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+}
+
+interface Experience {
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface Education {
+  degree: string;
+  institution: string;
+  location: string;
+  graduationDate: string;
+}
+
+interface UserData {
+  resumeUrl?: string;
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+  skills: string[];
+  experience: Experience[];
+  education: Education[];
+}
+
+interface ResumePreviewProps {
+  userData: UserData;
+}
+
+export function ResumePreview({ userData }: ResumePreviewProps) {
   const download = () => {
-    if (props.userData?.resumeUrl) {
-      window.open(props.userData.resumeUrl);
+    if (userData?.resumeUrl) {
+      window.open(userData.resumeUrl);
     } else {
       console.error("Resume URL not found");
     }
@@ -31,9 +72,9 @@ export function ResumePreview(props) {
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
-              <CardTitle className="text-2xl">{props.userData?.name}</CardTitle>
+              <CardTitle className="text-2xl">{userData?.name}</CardTitle>
               <CardDescription className="text-lg">
-                {props.userData?.title}
+                {userData?.title}
               </CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={download}>
@@ -42,11 +83,11 @@ export function ResumePreview(props) {
             </Button>
           </div>
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground mt-2">
-            <span>{props.userData?.email}</span>
+            <span>{userData?.email}</span>
             <span>•</span>
-            <span>{props.userData?.phone}</span>
+            <span>{userData?.phone}</span>
             <span>•</span>
-            <span>{props.userData?.location}</span>
+            <span>{userData?.location}</span>
           </div>
         </CardHeader>
         <CardContent>
@@ -59,12 +100,12 @@ export function ResumePreview(props) {
             </TabsList>
 
             <TabsContent value="summary" className="space-y-4">
-              <p>{props.userData?.summary}</p>
+              <p>{userData?.summary}</p>
             </TabsContent>
 
             <TabsContent value="skills" className="space-y-4">
               <div className="flex flex-wrap gap-2">
-                {props.userData?.skills.map((skill) => (
+                {userData?.skills.map((skill) => (
                   <Badge key={skill} variant="secondary">
                     {skill}
                   </Badge>
@@ -73,7 +114,7 @@ export function ResumePreview(props) {
             </TabsContent>
 
             <TabsContent value="experience" className="space-y-4">
-              {props.userData?.experience.map((exp, index) => (
+              {userData?.experience.map((exp, index) => (
                 <div
                   key={index}
                   className="border-b pb-4 last:border-0 last:pb-0"
@@ -101,7 +142,7 @@ export function ResumePreview(props) {
             </TabsContent>
 
             <TabsContent value="education" className="space-y-4">
-              {props.userData?.education.map((edu, index) => (
+              {userData?.education.map((edu, index) => (
                 <div key={index}>
                   <h3 className="font-bold">{edu.degree}</h3>
                   <div className="text-sm text-muted-foreground">

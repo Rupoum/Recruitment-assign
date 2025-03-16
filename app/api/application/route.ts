@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function POST(req: NextResponse, res: NextResponse) {
+export async function POST(req: Request) {
   const session = await getServerSession();
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -49,7 +49,7 @@ export async function POST(req: NextResponse, res: NextResponse) {
       },
     });
     console.log(updateJob);
-    return new NextResponse(JSON.stringify(updateProfile, updateJob), {
+    return new NextResponse(JSON.stringify(updateProfile), {
       status: 200,
     });
   } catch (error) {
@@ -58,7 +58,7 @@ export async function POST(req: NextResponse, res: NextResponse) {
   }
 }
 
-export async function GET(req: NextResponse, res: NextResponse) {
+export async function GET() {
   const session = await getServerSession();
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });

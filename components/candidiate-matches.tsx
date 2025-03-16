@@ -1,14 +1,33 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageSquare } from "lucide-react";
 import axios from "axios";
+interface Applicant {
+  id: string;
+  name: string;
+  title: string;
+  location: string;
+  user?: {
+    fileUrl?: string;
+  };
+}
+
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  description: string;
+  applicants: Applicant[];
+}
 
 export default function CandidateMatches() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Job[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

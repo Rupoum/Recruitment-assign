@@ -12,9 +12,59 @@ import { ResumePreview } from "@/components/resume-preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AllJobs from "@/components/all-jobs";
+
+interface PersonalInfo {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+}
+
+interface Experience {
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
+interface Education {
+  degree: string;
+  institution: string;
+  location: string;
+  graduationDate: string;
+}
+
+interface UserData {
+  resumeUrl?: string;
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+  skills: string[];
+  experience: Experience[];
+  education: Education[];
+}
+
 export default function CandidateDashboard() {
-  const [userData, setUserData] = useState(null);
-  const [applied, setApplied] = useState(null);
+  const [userData, setUserData] = useState<UserData>({
+    resumeUrl: "",
+    name: "",
+    title: "",
+    email: "",
+    phone: "",
+    location: "",
+    summary: "",
+    skills: [],
+    experience: [],
+    education: [],
+  });
+  const [applied, setApplied] = useState<string[]>([]);
   const [ai, setAi] = useState("");
   const session = useSession();
 
@@ -68,7 +118,7 @@ export default function CandidateDashboard() {
           <JobMatches applied={applied} />
         </TabsContent>
         <TabsContent value="applications" className="space-y-4">
-          <ApplicationStatus applied={applied} />
+          <ApplicationStatus />
         </TabsContent>
       </Tabs>
     </DashboardShell>

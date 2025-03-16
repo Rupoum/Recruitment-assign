@@ -15,9 +15,18 @@ import { Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
-
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  description: string;
+  skills: string[];
+  createdAt: string;
+}
 export function JobListings() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

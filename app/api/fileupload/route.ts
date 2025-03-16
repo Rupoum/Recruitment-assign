@@ -39,6 +39,9 @@ export async function POST(req: Request) {
     return new NextResponse("File uploaded successfully", { status: 200 });
   } catch (e) {
     console.error(e);
-    return new NextResponse(e, { status: 500 });
+    const errorMessage = e instanceof Error ? e.message : "Unknown error";
+    return new NextResponse(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+    });
   }
 }

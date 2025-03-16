@@ -1,6 +1,5 @@
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import fs from "fs";
@@ -176,7 +175,7 @@ export async function POST(req: Request) {
         data: {
           name: data.personalInfo.name,
           title: data.personalInfo.title,
-          userEmail: userEmail ? userEmail : undefined,
+          userEmail: userEmail || "",
           email: data.personalInfo.email,
           phone: data.personalInfo.phone,
           location: data.personalInfo.location,
