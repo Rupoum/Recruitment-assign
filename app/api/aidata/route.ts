@@ -60,7 +60,7 @@ export async function GET() {
           mimeType: uploadResult.file.mimeType,
         },
       },
-      "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys. Ensure the JSON response starts directly with the opening curly brace `{` and ends with the closing curly brace `}`. Do not include any additional text like json or explanations or ```. Always follow this exact format for the JSON keys: Name, Title, Email, Phone, Location, Summary, Skills, Experience, Education.",
+      "Extract the following information from the resume: Name, Title, Email, Phone, Location, Summary, Skills, Experience or Work Experience (including title, company, location, start date, end date, and description), and Education (including degree, institution, location, and graduation date). Format the response as JSON with appropriate keys. Ensure the JSON response starts directly with the opening curly brace `{` and ends with the closing curly brace `}`. Do not include any additional text like json or explanations or ```. Always follow this exact format for the JSON keys: Name, Title, Email, Phone, Location, Summary, Skills, Experience, Education.",
     ]);
 
     const text = await result.response.text();
@@ -136,14 +136,14 @@ export async function POST(req: Request) {
                 title: string;
                 company: string;
                 location: string;
-                startDate: Date;
+                startDate: string;
                 endDate?: string;
                 description: string;
               }) => ({
                 title: exp.title,
                 company: exp.company,
                 location: exp.location,
-                startDate: new Date(exp.startDate),
+                startDate: exp.startDate,
                 endDate: exp.endDate || " ",
                 description: exp.description,
               })
@@ -156,12 +156,12 @@ export async function POST(req: Request) {
                 degree: string;
                 institution: string;
                 location: string;
-                graduationDate: Date;
+                graduationDate: string;
               }) => ({
                 degree: edu.degree,
                 institution: edu.institution,
                 location: edu.location,
-                graduationDate: new Date(edu.graduationDate) || null,
+                graduationDate: edu.graduationDate || null,
               })
             ),
           },
@@ -187,14 +187,14 @@ export async function POST(req: Request) {
                 title: string;
                 company: string;
                 location: string;
-                startDate: Date;
+                startDate: string;
                 endDate?: string;
                 description: string;
               }) => ({
                 title: exp.title,
                 company: exp.company,
                 location: exp.location,
-                startDate: new Date(exp.startDate),
+                startDate: exp.startDate,
                 endDate: exp.endDate || " ",
                 description: exp.description,
               })
@@ -206,12 +206,12 @@ export async function POST(req: Request) {
                 degree: string;
                 institution: string;
                 location: string;
-                graduationDate: Date;
+                graduationDate: string;
               }) => ({
                 degree: edu.degree,
                 institution: edu.institution,
                 location: edu.location,
-                graduationDate: new Date(edu.graduationDate) || null,
+                graduationDate: edu.graduationDate || null,
               })
             ),
           },

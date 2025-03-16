@@ -9,7 +9,7 @@ import { JobListings } from "@/components/job-listings";
 // import { CandidateMatches } from "@/components/candidiate-matches";
 import { DashboardHeader } from "@/components/dashboard-header";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { Analytics } from "@/components/recruiter-analytics";
+// import { Analytics } from "@/components/recruiter-analytics";
 import CandidateMatches from "@/components/candidiate-matches";
 import { toast } from "sonner";
 
@@ -20,7 +20,10 @@ export default function RecruiterDashboard() {
         heading="Recruiter Dashboard"
         text="Manage your job listings and view candidate matches."
       >
-        <Button asChild className="bg-black text-white text-md">
+        <Button
+          asChild
+          className="bg-black text-white text-md hover:bg-white hover:text-black"
+        >
           <Link href="/dashboard/recruiter/jobs/new">
             <PlusCircle className="mr-2 h-4 w-4" />
             Post New Job

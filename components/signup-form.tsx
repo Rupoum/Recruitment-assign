@@ -158,7 +158,7 @@ export default function RegisterPage() {
           <CardFooter className="mt-4">
             <Button
               type="submit"
-              className="w-full text-black shadow-black shadow-sm"
+              className="w-full text-black shadow-black shadow-sm  hover:bg-black hover:text-white "
             >
               {loading ? "Creating Account..." : "Create Account"}
             </Button>

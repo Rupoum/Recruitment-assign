@@ -166,14 +166,17 @@ export default function UploadResume() {
                     <p className="text-sm text-muted-foreground mb-4">
                       {isUploaded
                         ? "Resume uploaded and parsed successfully!"
-                        : "Uploading and parsing..."}
+                        : "CLick on Upload"}
                     </p>
                     {isUploaded ? (
                       <Button variant="outline" onClick={() => setFile(null)}>
                         Upload a different file
                       </Button>
                     ) : (
-                      <Button onClick={handleUpload}>
+                      <Button
+                        className="hover:bg-black hover:text-white"
+                        onClick={handleUpload}
+                      >
                         {isUploaded ? "Uploaded" : "Upload"}{" "}
                       </Button>
                     )}

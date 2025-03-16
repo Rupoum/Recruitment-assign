@@ -6,9 +6,12 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   const session = await getServerSession();
+  console.log(session);
   if (!session) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  console.log(session.user?.email);
   const email = session.user?.email;
 
   //  finding the user

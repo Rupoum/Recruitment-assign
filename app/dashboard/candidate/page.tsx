@@ -92,7 +92,7 @@ export default function CandidateDashboard() {
         heading="Candidate Dashboard"
         text="Manage your profile, view job matches, and track applications."
       >
-        <Button asChild>
+        <Button asChild className="hover:bg-black hover:text-white">
           <Link href="/dashboard/candidate/resume/upload">
             <Upload className="mr-2 h-4 w-4" />
             Upload Resume

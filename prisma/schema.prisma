@@ -86,8 +86,8 @@ model Experience {
     title       String?
     company     String?
     location    String?
-    startDate   DateTime
-    endDate     String
+    startDate   String?
+    endDate     String?
     description String?
 
     userProfileId String      @db.ObjectId
@@ -102,7 +102,7 @@ model Education {
     degree         String?
     institution    String?
     location       String?
-    graduationDate DateTime?
+    graduationDate String?
 
     userProfileId String      @db.ObjectId
     userProfile   UserProfile @relation(fields: [userProfileId], references: [id])

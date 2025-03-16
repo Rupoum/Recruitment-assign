@@ -217,7 +217,10 @@ const JobForm = () => {
       <CardFooter className="flex justify-between">
         <Button variant="outline">Save as Draft</Button>
 
-        <Button className="bg-black text-white" onClick={handleSubmit}>
+        <Button
+          className="bg-black text-white hover:bg-white hover:text-black"
+          onClick={handleSubmit}
+        >
           {loading ? "Posting Job..." : "Post Job"}
         </Button>
       </CardFooter>

@@ -338,7 +338,7 @@ export function ResumeParser() {
                           </Label>
                           <Input
                             id={`exp-start-${index}`}
-                            type="month"
+                            type="text"
                             value={exp.startDate}
                             onChange={(e) => {
                               const updatedExperience = [
@@ -357,7 +357,7 @@ export function ResumeParser() {
                           <Label htmlFor={`exp-end-${index}`}>End Date</Label>
                           <Input
                             id={`exp-end-${index}`}
-                            type={exp.endDate === "Present" ? "text" : "month"}
+                            type="text"
                             value={exp.endDate}
                             onChange={(e) => {
                               const updatedExperience = [
@@ -414,7 +414,7 @@ export function ResumeParser() {
                         </Label>
                         <Input
                           id={`edu-grad-${index}`}
-                          type="month"
+                          type="text"
                           value={edu.graduationDate}
                           onChange={(e) => {
                             const updatedEducation = [...parsedData.education];

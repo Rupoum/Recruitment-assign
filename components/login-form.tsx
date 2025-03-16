@@ -141,7 +141,10 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="mt-3">
-            <Button type="submit" className="w-full shadow-black shadow-sm">
+            <Button
+              type="submit"
+              className="w-full text-black shadow-black shadow-sm  hover:bg-black hover:text-white"
+            >
               {loading ? "Logging in..." : "Log in"}
             </Button>
           </CardFooter>
